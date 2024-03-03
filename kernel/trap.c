@@ -67,6 +67,14 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
+    //Each tick that nothing goes wrong do stuff here
+    	if (which_dev == 2) {
+		if(1==1){
+			//Stuff;
+		}
+	 	p->ticks++;
+	//Trap frame it up here
+	}
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
     printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
