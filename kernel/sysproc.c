@@ -106,7 +106,18 @@ myproc()->handler = handler;
 return 0; //Fix later
 }
 
+// should restore state
 uint64
 sys_sigreturn(void){
-return 0;
+  // struct proc *p = myproc();
+  memmove(myproc()->trapframe, myproc()->alarm_trap, PGSIZE); // restores original trap frame
+
+  kfree(myproc()->alarm_trap); // frees memory that was used
+  // resets all of these back to default 
+  myproc()->alarm_trap = 0;
+  myproc()->alarm_set = 0;
+  //p->ticks = 0; 
+  myproc()->tick_count = 0; 
+
+  return 0;
 }
