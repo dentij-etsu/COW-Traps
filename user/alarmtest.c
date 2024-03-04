@@ -157,6 +157,7 @@ slow_handler()
   }
   sigalarm(0, 0);
   sigreturn();
+  printf("return passed\n");
 }
 
 //

@@ -95,13 +95,29 @@ sys_uptime(void)
 uint64
 sys_sigalarm(void){
 uint64 handler;
-int ticks;
+int alarm_ticks;
 
-argint(0, &ticks);
+argint(0, &alarm_ticks);
 argaddr(1, &handler);
 
-myproc()->ticks = ticks;
+struct trapframe *tframe = kalloc();
+printf("bobaloo 1 \n");
+
+memmove(tframe, myproc()->trapframe, PGSIZE);
+//memmove(myproc()->alarm_trap, tframe, PGSIZE);
+myproc()->alarm_trap = tframe;
+//tframe = myproc()->trapframe;
+
+//memmove(myproc()->alarm_trap, myproc()->trapframe, PGSIZE);
+printf("bobaloo 2 \n");
+myproc()->trapframe->epc = handler;
+printf("bobaloo 3 \n");
+
+myproc()->alarm_ticks = alarm_ticks;
 myproc()->handler = handler;
+
+kfree(tframe);
+printf("bobaloo 4 \n");
 
 return 0; //Fix later
 }
@@ -111,13 +127,14 @@ uint64
 sys_sigreturn(void){
   // struct proc *p = myproc();
   memmove(myproc()->trapframe, myproc()->alarm_trap, PGSIZE); // restores original trap frame
-
-  kfree(myproc()->alarm_trap); // frees memory that was used
+  printf("bobaloo 5 \n");
+  //kfree(myproc()->alarm_trap); // frees memory that was used
   // resets all of these back to default 
-  myproc()->alarm_trap = 0;
-  myproc()->alarm_set = 0;
-  //p->ticks = 0; 
-  myproc()->tick_count = 0; 
+  // myproc()->alarm_trap = 0;
+  printf("bobaloo 6 \n");
+  //myproc()->alarm_set = 0;
+  //p->current_ticks = 0; 
+  myproc()->current_ticks = 0; // for efficiency 
 
   return 0;
 }

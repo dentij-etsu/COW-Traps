@@ -92,7 +92,11 @@ struct proc {
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
   uint64 handler;	       // Handler address
-  int ticks;		       // Number of ticks
+  // for alarm handler
+  struct trapframe *alarm_trap;  // Pointer to trapframe
+  int alarm_set;                 // Indicates whether an alarm is set
+  int current_ticks;		       // Number of current_ticks (process)
+  int alarm_ticks;		// alarm ticks
 
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
@@ -107,8 +111,5 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 
-  // for alarm handler
-  struct trapframe *alarm_trap;  // Pointer to trapframe
-  int alarm_set;                 // Indicates whether an alarm is set
-  uint64 tick_count;
+  
 };

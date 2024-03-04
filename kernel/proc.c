@@ -127,10 +127,16 @@ found:
 
   p->alarm_trap = 0;
   p->alarm_set = 0;
-  p->tick_count = 0;
+  p->current_ticks = 0;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
+
+  if((p->alarm_trap = (struct trapframe *)kalloc()) == 0){
     freeproc(p);
     release(&p->lock);
     return 0;

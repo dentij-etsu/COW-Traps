@@ -68,11 +68,20 @@ usertrap(void)
   } else if((which_dev = devintr()) != 0){
     // ok
     //Each tick that nothing goes wrong do stuff here
-    	if (which_dev == 2) {
-		if(1==1){
-			//Stuff;
-		}
-	 	p->ticks++;
+    
+    //Each tick that nothing goes wrong do stuff here
+    if (which_dev == 2) // if there is a timer interrupt 
+    {
+      if ((p->current_ticks % p->alarm_ticks) == 0) {
+        
+      }
+      // if the process has a timer outstanding ie if current ticks % alarm ticks = 0 
+        // then invoke alarm sys_sigalarm()
+      
+      // when interval expires, returns to user space
+        // sys_sigreturn()
+      p->current_ticks++;
+	//Trap frame it up here
 	//Trap frame it up here
 	}
   } else {
