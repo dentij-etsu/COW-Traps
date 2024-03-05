@@ -70,6 +70,7 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
+	//printf("alarm handle\n");
 	p->current_ticks +=1;
 	//int l = (p->current_ticks % p->alarm_ticks);
     
@@ -89,9 +90,9 @@ usertrap(void)
 
       p->alarm_trap = tframe;
 
-      p->trapframe->epc = handler;
+      p->trapframe->epc = p->handler;
 
-      //kfree(tframe);
+      kfree(tframe);
 		}
 
   //myproc()->current_ticks++;
@@ -129,6 +130,10 @@ usertrap(void)
 	//Trap frame it up here
 	//Trap frame it up here
 	}
+	else if (which_dev == 2) {
+		yield();
+	}
+
   // if(which_dev == 2 && myproc()->alarm_ticks != 0){
 
   //   myproc()->current_ticks++;
