@@ -37,7 +37,9 @@ periodic()
 {
   count = count + 1;
   printf("alarm!\n");
+  //printf("pre return\n");
   sigreturn();
+  //printf("return safe\n");
 }
 
 // tests whether the kernel calls
