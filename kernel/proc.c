@@ -170,6 +170,7 @@ freeproc(struct proc *p)
   if(p->alarm_trap)
     kfree((void*)p->alarm_trap);
   p->trapframe = 0;
+  p->alarm_trap = 0;
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
@@ -181,6 +182,9 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+  p->alarm_set = 0;
+  p->current_ticks = 0;
+  p->alarm_ticks = 0;
 }
 
 // Create a user page table for a given process, with no user memory,
