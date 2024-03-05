@@ -110,7 +110,7 @@ return 0; //Fix later
 uint64
 sys_sigreturn(void){
   memmove(myproc()->trapframe, myproc()->alarm_trap, PGSIZE); // restores original trap frame
-  kfree(myproc()->alarm_trap); // frees memory that was used
+  //kfree(myproc()->tframe); // frees memory that was used
   // resets all of these back to default 
   myproc()->current_ticks = 0; 
   myproc()->alarm_set = 0;

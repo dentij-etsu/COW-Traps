@@ -69,80 +69,33 @@ usertrap(void)
 
     syscall();
   } else if((which_dev = devintr()) != 0){
-    // ok
-	//printf("alarm handle\n");
-	p->current_ticks +=1;
+	// ok
+
 	//int l = (p->current_ticks % p->alarm_ticks);
-    
-    //Each tick that nothing goes wrong do stuff here
-    if (which_dev == 2 && p->alarm_set == 0) // if there is a timer interrupt 
-    {
-		
+
+	//Each tick that nothing goes wrong do stuff here
+	if (which_dev == 2) // if there is a timer interrupt 
+	{
+		if(p->alarm_ticks != 0) {p->current_ticks +=1;}
 		//printf("CUR_TICKS: %d CURmodALARM: %d ALARM_SET: %d\n", p->current_ticks, l, p->alarm_set);
 		//p->current_ticks +=1;
-      if ((p->current_ticks % p->alarm_ticks) == 0) {
-		  p->alarm_set = 1;
-		  //printf("alarm handle\n");
-      struct trapframe *tframe = kalloc();
-		
-		
-      memmove(tframe, p->trapframe, PGSIZE); // sizeof(struct trapframe)
+		if (p->alarm_ticks != 0 && (p->current_ticks % p->alarm_ticks) == 0 && p->alarm_set == 0) 
+		{
+			//printf("\nTEST\n\n");
+			p->alarm_set = 1;
+			//printf("alarm handle\n");
+			//struct trapframe *tframe = kalloc();
 
-      p->alarm_trap = tframe;
+			memmove(p->alarm_trap, p->trapframe, PGSIZE); // sizeof(struct trapframe)
+			//memmove(p->alarm_trap, tframe, PGSIZE);
+			//p->alarm_trap = tframe;
 
-      p->trapframe->epc = p->handler;
+			p->trapframe->epc = handler;
 
-      kfree(tframe);
+			//kfree(tframe);
 		}
-
-  //myproc()->current_ticks++;
-
-
-
-      yield();
-      // originall if p->current_ticks % p->alarm_ticks changed to 
-      // if ((p->current_ticks % p->alarm_ticks) == 0) {
-      //   struct trapframe *tframe = kalloc();
-      //   printf("bobaloo 1 \n");
-
-      //   memmove(tframe, myproc()->trapframe, PGSIZE);
-      //   //memmove(myproc()->alarm_trap, tframe, PGSIZE);
-      //   myproc()->alarm_trap = tframe;
-      //   //tframe = myproc()->trapframe;
-
-      //   //memmove(myproc()->alarm_trap, myproc()->trapframe, PGSIZE);
-      //   printf("bobaloo 2 \n");
-      //   myproc()->trapframe->epc = handler;
-      //   printf("bobaloo 3 \n");
-
-      //   kfree(tframe);
-      //   printf("bobaloo 4 \n");
-
-
-      // }
-      // if the process has a timer outstanding ie if current ticks % alarm ticks = 0 
-        // then invoke alarm sys_sigalarm()
-        // if the process needs alarm, save trapframe
-      
-      // when interval expires, returns to user space
-        // sys_sigreturn()
-      //p->current_ticks++;
-	//Trap frame it up here
-	//Trap frame it up here
-	}
-	else if (which_dev == 2) {
-		yield();
 	}
 
-  // if(which_dev == 2 && myproc()->alarm_ticks != 0){
-
-  //   myproc()->current_ticks++;
-  //   if ((myproc()->current_ticks % myproc()->alarm_ticks) == 0) {
-  //     myproc()->current_ticks=0;
-
-
-  //   }
-  // }
 } else {
   printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
   printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
