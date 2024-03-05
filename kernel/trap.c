@@ -71,28 +71,15 @@ usertrap(void)
   } else if((which_dev = devintr()) != 0){
 	// ok
 
-	//int l = (p->current_ticks % p->alarm_ticks);
-
-	//Each tick that nothing goes wrong do stuff here
 	if (which_dev == 2) // if there is a timer interrupt 
 	{
 		if(p->alarm_ticks != 0) {p->current_ticks +=1;}
-		//printf("CUR_TICKS: %d CURmodALARM: %d ALARM_SET: %d\n", p->current_ticks, l, p->alarm_set);
-		//p->current_ticks +=1;
+
 		if (p->alarm_ticks != 0 && (p->current_ticks % p->alarm_ticks) == 0 && p->alarm_set == 0) 
 		{
-			//printf("\nTEST\n\n");
 			p->alarm_set = 1;
-			//printf("alarm handle\n");
-			//struct trapframe *tframe = kalloc();
-
 			memmove(p->alarm_trap, p->trapframe, PGSIZE); // sizeof(struct trapframe)
-			//memmove(p->alarm_trap, tframe, PGSIZE);
-			//p->alarm_trap = tframe;
-
 			p->trapframe->epc = handler;
-
-			//kfree(tframe);
 		}
 	}
 
